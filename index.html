@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shibumi Aura Shot Arşivi</title>
-    <!-- Fontlar: Playfair Display (Başlıklar), Montserrat (Metin), Great Vibes (İnanç Cümlesi) -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #FDFBF7; /* Fildişi / Krem */
-            --text-color: #2C2C2C; /* Kömür Grisi */
-            --accent-color: #D4AF37; /* Mat Şampanya Altını */
+            --bg-color: #FDFBF7; 
+            --text-color: #2C2C2C; 
+            --accent-color: #D4AF37; 
             --white-space: 40px;
         }
 
@@ -30,13 +29,11 @@
             margin: 0 auto;
         }
 
-        /* Tipografi */
         h1, h2, h3 {
             font-family: 'Playfair Display', serif;
             font-weight: 400;
         }
 
-        /* Header */
         header {
             text-align: center;
             margin-bottom: 60px;
@@ -67,7 +64,6 @@
             font-style: italic;
         }
 
-        /* Ana Izgara (Grid) */
         main {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -75,7 +71,7 @@
             margin-bottom: 60px;
         }
 
-        /* Sol Panel: Vizyon Alanı (Tek Kolaj) */
+        /* Sol Panel (Tek Kolaj Alanı) */
         .vision-board {
             display: flex;
             flex-direction: column;
@@ -83,7 +79,7 @@
 
         .image-upload-box {
             border: 1px dashed var(--accent-color);
-            height: 100%; /* Tüm sol paneli kaplasın */
+            height: 100%; 
             min-height: 400px;
             display: flex;
             align-items: center;
@@ -120,6 +116,28 @@
             text-align: center;
             padding: 10px;
             letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .remove-img-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #d9534f;
+            border: 1px solid #d9534f;
+            padding: 5px 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: none;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .remove-img-btn:hover {
+            background-color: #d9534f;
+            color: #fff;
         }
 
         /* Sağ Panel: Dinamik Form */
@@ -173,6 +191,29 @@
             line-height: 1.2;
         }
 
+        /* Link Alanı Düzenlemeleri */
+        .link-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .remove-link-btn {
+            background: none;
+            border: none;
+            color: #bbb;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 0 5px;
+        }
+
+        .remove-link-btn:hover {
+            color: #d9534f;
+            transform: scale(1.1);
+        }
+
         .add-link-btn {
             background: none;
             border: none;
@@ -184,13 +225,14 @@
             margin-top: 5px;
             letter-spacing: 1px;
             transition: opacity 0.3s ease;
+            width: fit-content;
         }
 
         .add-link-btn:hover {
             opacity: 0.7;
         }
 
-        /* Alt Kısım: Gurme CEO Yorumu */
+        /* Gurme CEO Yorumu */
         .ceo-section {
             background-color: #fff;
             padding: 40px;
@@ -226,7 +268,6 @@
             color: var(--accent-color);
         }
 
-        /* Kaydet Butonu */
         .btn-save {
             background-color: var(--text-color);
             color: var(--bg-color);
@@ -267,6 +308,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .shot-card:hover {
@@ -274,10 +316,27 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
+        .delete-card-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #bbb;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .delete-card-btn:hover {
+            color: #d9534f;
+        }
+
         .shot-card h3 {
             border-bottom: 1px solid var(--accent-color);
             padding-bottom: 10px;
             margin-bottom: 15px;
+            padding-right: 30px; /* Butonla başlık çakışmasın diye */
         }
 
         .shot-card p {
@@ -330,17 +389,9 @@
         }
 
         @media (max-width: 768px) {
-            main {
-                grid-template-columns: 1fr;
-            }
-            .date-display {
-                position: static;
-                display: block;
-                margin-top: 20px;
-            }
-            .image-upload-box {
-                min-height: 250px;
-            }
+            main { grid-template-columns: 1fr; }
+            .date-display { position: static; display: block; margin-top: 20px; }
+            .image-upload-box { min-height: 250px; }
         }
     </style>
 </head>
@@ -353,12 +404,14 @@
     </header>
 
     <main>
-        <!-- Sol Panel (Tek Kolaj Alanı) -->
+        <!-- Sol Panel -->
         <section class="vision-board">
-            <div class="image-upload-box" onclick="document.getElementById('collageImg').click()">
+            <div class="image-upload-box" id="uploadBox">
                 <span id="collageText">İlham Kolajı (Görsel Ekle)</span>
-                <input type="file" id="collageImg" accept="image/*" onchange="previewImage(this, 'collagePreview', 'collageText')">
-                <img id="collagePreview" src="" alt="Kolaj Görseli">
+                <!-- Görseli tıklayarak değiştirmek için img onclick eklendi -->
+                <input type="file" id="collageImg" accept="image/*" onchange="previewImage(this)">
+                <img id="collagePreview" src="" alt="Kolaj Görseli" onclick="document.getElementById('collageImg').click()">
+                <button class="remove-img-btn" id="removeImgBtn" onclick="removeImage(event)">✖ Kaldır</button>
             </div>
         </section>
 
@@ -384,12 +437,22 @@
                 <textarea id="shotBelief" class="script-font" oninput="autoResize(this)" placeholder="Buraya yazılanlar zihne kazınır..." autocomplete="off"></textarea>
             </div>
 
-            <!-- Yeni Bağlantılar Alanı -->
+            <!-- Bağlantılar -->
             <div class="form-group" id="linksContainer">
                 <label>İlham Bağlantıları (Pinler, Şarkılar vb.)</label>
-                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
-                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
-                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                <!-- Standart 3 Link Kutusu -->
+                <div class="link-wrapper">
+                    <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                    <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()" title="Sil">✖</button>
+                </div>
+                <div class="link-wrapper">
+                    <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                    <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()" title="Sil">✖</button>
+                </div>
+                <div class="link-wrapper">
+                    <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                    <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()" title="Sil">✖</button>
+                </div>
             </div>
             <button class="add-link-btn" onclick="addLinkField()">+ Yeni Bağlantı Ekle</button>
         </section>
@@ -419,48 +482,81 @@
     <section class="gallery-section">
         <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 20px;">Geçmiş Shotlar</h2>
         <div class="gallery-grid" id="galleryGrid">
-            <!-- JavaScript ile kartlar buraya eklenecek -->
+            <!-- JavaScript ile eklenecek -->
         </div>
     </section>
 
     <script>
-        // 1. Tarihi Otomatik Çekme
+        // 1. Tarih
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('todayDate').innerText = new Date().toLocaleDateString('tr-TR', options);
 
-        // 2. Textarea Otomatik Genişleme
+        // 2. Textarea Oto-Genişleme
         function autoResize(textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
         }
 
-        // 3. Tek Görsel Yükleme ve Önizleme
+        // 3. Görsel Yükleme, Değiştirme ve Kaldırma
         let uploadedImage = "";
-        function previewImage(input, previewId, textId) {
+        
+        // Kutuya tıklandığında input'u tetikle (Görsel yoksa veya yanındaki boşluğa tıklanırsa)
+        document.getElementById('uploadBox').addEventListener('click', function(e) {
+            if(e.target.id === 'uploadBox' || e.target.id === 'collageText') {
+                document.getElementById('collageImg').click();
+            }
+        });
+
+        function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById(previewId).src = e.target.result;
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(textId).style.display = 'none';
+                    document.getElementById('collagePreview').src = e.target.result;
+                    document.getElementById('collagePreview').style.display = 'block';
+                    document.getElementById('collageText').style.display = 'none';
+                    document.getElementById('removeImgBtn').style.display = 'block';
                     uploadedImage = e.target.result;
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // 4. Dinamik Link Alanı Ekleme
+        function removeImage(event) {
+            event.stopPropagation(); // Tıklamanın alt elementlere inmesini engeller
+            document.getElementById('collagePreview').src = '';
+            document.getElementById('collagePreview').style.display = 'none';
+            document.getElementById('collageText').style.display = 'block';
+            document.getElementById('removeImgBtn').style.display = 'none';
+            document.getElementById('collageImg').value = '';
+            uploadedImage = "";
+        }
+
+        // 4. Link Ekleme/Silme
         function addLinkField() {
             const container = document.getElementById('linksContainer');
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'link-wrapper';
+            
             const newInput = document.createElement('input');
             newInput.type = 'url';
             newInput.className = 'link-input';
             newInput.placeholder = 'https://...';
             newInput.autocomplete = 'off';
-            container.appendChild(newInput);
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'remove-link-btn';
+            removeBtn.innerHTML = '✖';
+            removeBtn.title = 'Sil';
+            removeBtn.onclick = function() { wrapper.remove(); };
+            
+            wrapper.appendChild(newInput);
+            wrapper.appendChild(removeBtn);
+            container.appendChild(wrapper);
         }
 
-        // 5. Verileri Local Storage'a Kaydetme
+        // 5. Kaydetme
         function saveShot() {
             const name = document.getElementById('shotName').value;
             const content = document.getElementById('shotContent').value;
@@ -469,12 +565,10 @@
             const ceoNotes = document.getElementById('ceoNotes').value;
             const date = document.getElementById('todayDate').innerText;
             
-            // Tüm linkleri toplayıp boş olmayanları filtreleme
             const linkInputs = document.querySelectorAll('.link-input');
             const links = [];
             linkInputs.forEach(input => {
                 if(input.value.trim() !== "") {
-                    // Kullanıcı http:// yazmayı unutursa otomatik ekleme
                     let finalUrl = input.value.trim();
                     if(!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
                         finalUrl = 'https://' + finalUrl;
@@ -522,7 +616,17 @@
             }
         }
 
-        // 6. Formu Temizleme
+        // 6. Arşivden Tekil Shot Silme
+        function deleteShot(id) {
+            if(confirm("Bu shot'ı arşivden tamamen silmek istediğine emin misin?")) {
+                let shots = JSON.parse(localStorage.getItem('shibumiShots')) || [];
+                shots = shots.filter(shot => shot.id !== id);
+                localStorage.setItem('shibumiShots', JSON.stringify(shots));
+                renderGallery();
+            }
+        }
+
+        // 7. Form Temizleme
         function resetForm() {
             document.getElementById('shotName').value = '';
             document.getElementById('shotContent').value = '';
@@ -534,27 +638,30 @@
             document.getElementById('ceoNotes').value = '';
             document.getElementById('ceoNotes').style.height = 'auto';
             
-            // Link alanlarını sıfırlama (Sadece ilk 3 tanesini tut)
             const linksContainer = document.getElementById('linksContainer');
-            const labelHtml = '<label>İlham Bağlantıları (Pinler, Şarkılar vb.)</label>';
-            const defaultInputs = `
-                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
-                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
-                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+            linksContainer.innerHTML = `
+                <label>İlham Bağlantıları (Pinler, Şarkılar vb.)</label>
+                <div class="link-wrapper">
+                    <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                    <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()" title="Sil">✖</button>
+                </div>
+                <div class="link-wrapper">
+                    <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                    <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()" title="Sil">✖</button>
+                </div>
+                <div class="link-wrapper">
+                    <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                    <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()" title="Sil">✖</button>
+                </div>
             `;
-            linksContainer.innerHTML = labelHtml + defaultInputs;
 
             const stars = document.getElementsByName('rating');
             for(let star of stars) star.checked = false;
 
-            document.getElementById('collagePreview').style.display = 'none';
-            document.getElementById('collagePreview').src = '';
-            document.getElementById('collageText').style.display = 'block';
-            document.getElementById('collageImg').value = '';
-            uploadedImage = "";
+            removeImage(new Event('reset'));
         }
 
-        // 7. Galeriyi Ekrana Çizme
+        // 8. Galeriyi Çizme
         function renderGallery() {
             const gallery = document.getElementById('galleryGrid');
             gallery.innerHTML = '';
@@ -563,7 +670,6 @@
             shots.forEach(shot => {
                 let starsHTML = '★'.repeat(shot.rating) + '☆'.repeat(5 - shot.rating);
                 
-                // Linkleri HTML'e çevirme
                 let linksHTML = '';
                 if(shot.links && shot.links.length > 0) {
                     linksHTML = '<ul class="shot-links-list">';
@@ -573,7 +679,6 @@
                     linksHTML += '</ul>';
                 }
 
-                // Kolaj görseli HTML'i
                 let imageHTML = '';
                 if(shot.image) {
                     imageHTML = `<div class="shot-image-container"><img src="${shot.image}" alt="Kolaj Görseli"></div>`;
@@ -582,7 +687,8 @@
                 const card = document.createElement('div');
                 card.className = 'shot-card';
                 card.innerHTML = `
-                    <p style="color: var(--accent-color); font-size: 0.8rem; text-align: right;">${shot.date}</p>
+                    <button class="delete-card-btn" onclick="deleteShot(${shot.id})" title="Arşivden Sil">✖</button>
+                    <p style="color: var(--accent-color); font-size: 0.8rem; text-align: right; margin-bottom: 10px;">${shot.date}</p>
                     <h3>${shot.name}</h3>
                     ${shot.content ? `<p><strong>İçerik:</strong> ${shot.content}</p>` : ''}
                     ${shot.glass ? `<p><strong>Bardak (Fiziksel Duruş):</strong> ${shot.glass}</p>` : ''}
