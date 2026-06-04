@@ -69,18 +69,20 @@
             grid-template-columns: 1fr 2fr;
             gap: 60px;
             margin-bottom: 60px;
+            align-items: start; /* Sol panelin sağ panelle birlikte uzamasını engeller */
         }
 
-        /* Sol Panel (Tek Kolaj Alanı) */
+        /* Sol Panel (Sticky) */
         .vision-board {
             display: flex;
             flex-direction: column;
+            position: sticky;
+            top: 40px;
         }
 
         .image-upload-box {
             border: 1px dashed var(--accent-color);
-            height: 100%; 
-            min-height: 400px;
+            height: 500px; /* Sabit bir yükseklik verildi ki sünmesin */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -336,7 +338,7 @@
             border-bottom: 1px solid var(--accent-color);
             padding-bottom: 10px;
             margin-bottom: 15px;
-            padding-right: 30px; /* Butonla başlık çakışmasın diye */
+            padding-right: 30px; 
         }
 
         .shot-card p {
@@ -391,7 +393,8 @@
         @media (max-width: 768px) {
             main { grid-template-columns: 1fr; }
             .date-display { position: static; display: block; margin-top: 20px; }
-            .image-upload-box { min-height: 250px; }
+            .vision-board { position: static; }
+            .image-upload-box { height: 350px; }
         }
     </style>
 </head>
@@ -408,7 +411,6 @@
         <section class="vision-board">
             <div class="image-upload-box" id="uploadBox">
                 <span id="collageText">İlham Kolajı (Görsel Ekle)</span>
-                <!-- Görseli tıklayarak değiştirmek için img onclick eklendi -->
                 <input type="file" id="collageImg" accept="image/*" onchange="previewImage(this)">
                 <img id="collagePreview" src="" alt="Kolaj Görseli" onclick="document.getElementById('collageImg').click()">
                 <button class="remove-img-btn" id="removeImgBtn" onclick="removeImage(event)">✖ Kaldır</button>
@@ -431,16 +433,21 @@
                 <label>Bardak (Fiziksel Duruş)</label>
                 <textarea id="shotGlass" oninput="autoResize(this)" placeholder="Beden dili ve duruş notları..."></textarea>
             </div>
+            
+            <!-- Tarif ve İnanç Cümlesi İkiye Ayrıldı -->
+            <div class="form-group">
+                <label>Pipet (Aksiyon / Tarif)</label>
+                <textarea id="shotStraw" oninput="autoResize(this)" placeholder="Bu shot'ın pratiği, uygulaması nasıldır?"></textarea>
+            </div>
 
             <div class="form-group">
-                <label>Pipet (İnanç Cümlesi)</label>
+                <label>İnanç Cümlesi</label>
                 <textarea id="shotBelief" class="script-font" oninput="autoResize(this)" placeholder="Buraya yazılanlar zihne kazınır..." autocomplete="off"></textarea>
             </div>
 
             <!-- Bağlantılar -->
             <div class="form-group" id="linksContainer">
                 <label>İlham Bağlantıları (Pinler, Şarkılar vb.)</label>
-                <!-- Standart 3 Link Kutusu -->
                 <div class="link-wrapper">
                     <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
                     <button type="button" class="remove-link-btn" onclick="this.parentElement.remove()" title="Sil">✖</button>
@@ -487,42 +494,70 @@
     </section>
 
     <script>
-        // 1. Tarih
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('todayDate').innerText = new Date().toLocaleDateString('tr-TR', options);
 
-        // 2. Textarea Oto-Genişleme
         function autoResize(textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
         }
 
-        // 3. Görsel Yükleme, Değiştirme ve Kaldırma
         let uploadedImage = "";
         
-        // Kutuya tıklandığında input'u tetikle (Görsel yoksa veya yanındaki boşluğa tıklanırsa)
         document.getElementById('uploadBox').addEventListener('click', function(e) {
             if(e.target.id === 'uploadBox' || e.target.id === 'collageText') {
                 document.getElementById('collageImg').click();
             }
         });
 
+        // OTOMATİK SIKIŞTIRMA (CANVAS KULLANARAK)
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('collagePreview').src = e.target.result;
-                    document.getElementById('collagePreview').style.display = 'block';
-                    document.getElementById('collageText').style.display = 'none';
-                    document.getElementById('removeImgBtn').style.display = 'block';
-                    uploadedImage = e.target.result;
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; // Genişlik maksimum 800px olsun
+                        const MAX_HEIGHT = 1000;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // %70 kalite ile jpeg olarak sıkıştırır
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7); 
+                        
+                        document.getElementById('collagePreview').src = compressedDataUrl;
+                        document.getElementById('collagePreview').style.display = 'block';
+                        document.getElementById('collageText').style.display = 'none';
+                        document.getElementById('removeImgBtn').style.display = 'block';
+                        
+                        uploadedImage = compressedDataUrl;
+                    }
+                    img.src = e.target.result;
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
         function removeImage(event) {
-            event.stopPropagation(); // Tıklamanın alt elementlere inmesini engeller
+            event.stopPropagation();
             document.getElementById('collagePreview').src = '';
             document.getElementById('collagePreview').style.display = 'none';
             document.getElementById('collageText').style.display = 'block';
@@ -531,36 +566,31 @@
             uploadedImage = "";
         }
 
-        // 4. Link Ekleme/Silme
         function addLinkField() {
             const container = document.getElementById('linksContainer');
-            
             const wrapper = document.createElement('div');
             wrapper.className = 'link-wrapper';
-            
             const newInput = document.createElement('input');
             newInput.type = 'url';
             newInput.className = 'link-input';
             newInput.placeholder = 'https://...';
             newInput.autocomplete = 'off';
-            
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.className = 'remove-link-btn';
             removeBtn.innerHTML = '✖';
             removeBtn.title = 'Sil';
             removeBtn.onclick = function() { wrapper.remove(); };
-            
             wrapper.appendChild(newInput);
             wrapper.appendChild(removeBtn);
             container.appendChild(wrapper);
         }
 
-        // 5. Kaydetme
         function saveShot() {
             const name = document.getElementById('shotName').value;
             const content = document.getElementById('shotContent').value;
             const glass = document.getElementById('shotGlass').value;
+            const straw = document.getElementById('shotStraw').value;
             const belief = document.getElementById('shotBelief').value;
             const ceoNotes = document.getElementById('ceoNotes').value;
             const date = document.getElementById('todayDate').innerText;
@@ -597,6 +627,7 @@
                 name: name,
                 content: content,
                 glass: glass,
+                straw: straw,
                 belief: belief,
                 ceoNotes: ceoNotes,
                 rating: rating,
@@ -612,11 +643,10 @@
                 renderGallery();
                 resetForm();
             } catch (e) {
-                alert("Görsel boyutu çok büyük olabilir. Lütfen görselinizi biraz daha sıkıştırarak deneyin.");
+                alert("Sistemsel bir hata oluştu. Depolama alanı dolu olabilir.");
             }
         }
 
-        // 6. Arşivden Tekil Shot Silme
         function deleteShot(id) {
             if(confirm("Bu shot'ı arşivden tamamen silmek istediğine emin misin?")) {
                 let shots = JSON.parse(localStorage.getItem('shibumiShots')) || [];
@@ -626,13 +656,14 @@
             }
         }
 
-        // 7. Form Temizleme
         function resetForm() {
             document.getElementById('shotName').value = '';
             document.getElementById('shotContent').value = '';
             document.getElementById('shotContent').style.height = 'auto';
             document.getElementById('shotGlass').value = '';
             document.getElementById('shotGlass').style.height = 'auto';
+            document.getElementById('shotStraw').value = '';
+            document.getElementById('shotStraw').style.height = 'auto';
             document.getElementById('shotBelief').value = '';
             document.getElementById('shotBelief').style.height = 'auto';
             document.getElementById('ceoNotes').value = '';
@@ -661,7 +692,6 @@
             removeImage(new Event('reset'));
         }
 
-        // 8. Galeriyi Çizme
         function renderGallery() {
             const gallery = document.getElementById('galleryGrid');
             gallery.innerHTML = '';
@@ -692,6 +722,7 @@
                     <h3>${shot.name}</h3>
                     ${shot.content ? `<p><strong>İçerik:</strong> ${shot.content}</p>` : ''}
                     ${shot.glass ? `<p><strong>Bardak (Fiziksel Duruş):</strong> ${shot.glass}</p>` : ''}
+                    ${shot.straw ? `<p><strong>Pipet (Aksiyon/Tarif):</strong> ${shot.straw}</p>` : ''}
                     ${shot.ceoNotes ? `<p><strong>Zaze'nin Notları:</strong> ${shot.ceoNotes}</p>` : ''}
                     <p style="color: var(--accent-color); letter-spacing: 2px; margin-bottom: 5px;">Frekans: ${starsHTML}</p>
                     ${linksHTML}
