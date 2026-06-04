@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shibumi Aura Shot Arşivi</title>
+    <!-- Fontlar: Playfair Display (Başlıklar), Montserrat (Metin), Great Vibes (İnanç Cümlesi) -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FDFBF7; /* Fildişi / Krem */
+            --text-color: #2C2C2C; /* Kömür Grisi */
+            --accent-color: #D4AF37; /* Mat Şampanya Altını */
+            --white-space: 40px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            padding: var(--white-space);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Tipografi */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--accent-color);
+            position: relative;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+        }
+
+        .date-display {
+            position: absolute;
+            right: 0;
+            bottom: 20px;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* Ana Izgara (Grid) */
+        main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        /* Sol Panel: Vizyon Alanı */
+        .vision-board {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .image-upload-box {
+            border: 1px dashed var(--accent-color);
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        .image-upload-box:hover {
+            background-color: #faf8f2;
+        }
+
+        .image-upload-box input {
+            display: none;
+        }
+
+        .image-upload-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .image-upload-box span {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Sağ Panel: Dinamik Form */
+        .dynamic-form {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 10px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: border-color 0.3s ease;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-bottom-color: var(--accent-color);
+        }
+
+        textarea {
+            min-height: 40px;
+            overflow: hidden;
+        }
+
+        .script-font {
+            font-family: 'Great Vibes', cursive !important;
+            font-size: 1.5rem !important;
+            color: var(--accent-color) !important;
+        }
+
+        /* Alt Kısım: Gurme CEO Yorumu */
+        .ceo-section {
+            background-color: #fff;
+            padding: 40px;
+            border: 1px solid var(--accent-color);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            transition: color 0.2s ease;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: var(--accent-color);
+        }
+
+        /* Kaydet Butonu */
+        .btn-save {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 15px 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .btn-save:hover {
+            background-color: var(--accent-color);
+        }
+
+        /* Geçmiş Shotlar Galerisi */
+        .gallery-section {
+            margin-top: 80px;
+            border-top: 1px solid #ddd;
+            padding-top: 40px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .shot-card {
+            background-color: #fff;
+            border: 1px solid #eee;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .shot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .shot-card h3 {
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .shot-card p {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .shot-card .script-font {
+            font-size: 1.3rem !important;
+            margin-top: 15px;
+            display: block;
+        }
+
+        .shot-images {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .shot-images img {
+            width: 30%;
+            height: 80px;
+            object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            .date-display {
+                position: static;
+                display: block;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <p>Büyülü Mutfak / '0' Frekansı</p>
+        <h1>SHIBUMI AURA SHOT ARŞİVİ</h1>
+        <div class="date-display" id="todayDate"></div>
+    </header>
+
+    <main>
+        <!-- Sol Panel -->
+        <section class="vision-board">
+            <div class="image-upload-box" onclick="document.getElementById('img1').click()">
+                <span id="text1">+ Görsel Ekle</span>
+                <input type="file" id="img1" accept="image/*" onchange="previewImage(this, 'preview1', 'text1')">
+                <img id="preview1" src="" alt="Görsel 1">
+            </div>
+            <div class="image-upload-box" onclick="document.getElementById('img2').click()">
+                <span id="text2">+ Görsel Ekle</span>
+                <input type="file" id="img2" accept="image/*" onchange="previewImage(this, 'preview2', 'text2')">
+                <img id="preview2" src="" alt="Görsel 2">
+            </div>
+            <div class="image-upload-box" onclick="document.getElementById('img3').click()">
+                <span id="text3">+ Görsel Ekle</span>
+                <input type="file" id="img3" accept="image/*" onchange="previewImage(this, 'preview3', 'text3')">
+                <img id="preview3" src="" alt="Görsel 3">
+            </div>
+        </section>
+
+        <!-- Sağ Panel -->
+        <section class="dynamic-form">
+            <div class="form-group">
+                <label>Aura Shot Adı</label>
+                <input type="text" id="shotName" placeholder="Örn: Zamanın İzafiyeti" autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label>İçerik</label>
+                <textarea id="shotContent" oninput="autoResize(this)" placeholder="Bu kokteylin içinde neler var? (Hormonlar, frekanslar, aromalar...)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Bardak (Fiziksel Duruş)</label>
+                <textarea id="shotGlass" oninput="autoResize(this)" placeholder="Beden dili ve duruş notları..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Pipet (İnanç Cümlesi)</label>
+                <input type="text" id="shotBelief" class="script-font" placeholder="Buraya yazılanlar zihne kazınır..." autocomplete="off">
+            </div>
+        </section>
+    </main>
+
+    <!-- Gurme CEO Yorumu -->
+    <section class="ceo-section">
+        <div class="form-group">
+            <label>Zaze'nin Tadım Notları</label>
+            <textarea id="ceoNotes" oninput="autoResize(this)" placeholder="Bu shot ruhta nasıl bir his bıraktı?"></textarea>
+        </div>
+        <div class="form-group">
+            <label style="border:none; padding:0;">Frekans Puanı</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            </div>
+        </div>
+    </section>
+
+    <button class="btn-save" onclick="saveShot()">Arşive Ekle</button>
+
+    <!-- Geçmiş Shotlar Galerisi -->
+    <section class="gallery-section">
+        <h2 style="text-align: center; color: var(--accent-color);">Geçmiş Shotlar</h2>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- JavaScript ile kartlar buraya eklenecek -->
+        </div>
+    </section>
+
+    <script>
+        // 1. Tarihi Otomatik Çekme
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('todayDate').innerText = new Date().toLocaleDateString('tr-TR', options);
+
+        // 2. Textarea Otomatik Genişleme
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        // 3. Görsel Yükleme ve Önizleme (Base64'e çevirir)
+        let uploadedImages = ["", "", ""];
+        function previewImage(input, previewId, textId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(previewId).src = e.target.result;
+                    document.getElementById(previewId).style.display = 'block';
+                    document.getElementById(textId).style.display = 'none';
+                    
+                    // Dizide doğru indekse kaydet (id'nin son rakamından indeksi bul)
+                    let index = parseInt(input.id.replace('img', '')) - 1;
+                    uploadedImages[index] = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // 4. Verileri Local Storage'a Kaydetme
+        function saveShot() {
+            const name = document.getElementById('shotName').value;
+            const content = document.getElementById('shotContent').value;
+            const glass = document.getElementById('shotGlass').value;
+            const belief = document.getElementById('shotBelief').value;
+            const ceoNotes = document.getElementById('ceoNotes').value;
+            const date = document.getElementById('todayDate').innerText;
+            
+            // Seçili yıldızı bul
+            let rating = 0;
+            const stars = document.getElementsByName('rating');
+            for(let star of stars) {
+                if(star.checked) {
+                    rating = star.value;
+                    break;
+                }
+            }
+
+            if(!name) {
+                alert("Lütfen en azından bir Aura Shot Adı girin.");
+                return;
+            }
+
+            const newShot = {
+                id: Date.now(),
+                date: date,
+                name: name,
+                content: content,
+                glass: glass,
+                belief: belief,
+                ceoNotes: ceoNotes,
+                rating: rating,
+                images: [...uploadedImages]
+            };
+
+            let shots = JSON.parse(localStorage.getItem('shibumiShots')) || [];
+            shots.unshift(newShot); // En yeni en başa
+            
+            try {
+                localStorage.setItem('shibumiShots', JSON.stringify(shots));
+                renderGallery();
+                resetForm();
+            } catch (e) {
+                alert("Görsel boyutları çok büyük olabilir. Lütfen daha küçük boyutlu görseller (örn: 500kb altı) tercih edin.");
+            }
+        }
+
+        // 5. Formu Temizleme
+        function resetForm() {
+            document.getElementById('shotName').value = '';
+            document.getElementById('shotContent').value = '';
+            document.getElementById('shotContent').style.height = 'auto';
+            document.getElementById('shotGlass').value = '';
+            document.getElementById('shotGlass').style.height = 'auto';
+            document.getElementById('shotBelief').value = '';
+            document.getElementById('ceoNotes').value = '';
+            document.getElementById('ceoNotes').style.height = 'auto';
+            
+            const stars = document.getElementsByName('rating');
+            for(let star of stars) star.checked = false;
+
+            for(let i=1; i<=3; i++) {
+                document.getElementById(`preview${i}`).style.display = 'none';
+                document.getElementById(`preview${i}`).src = '';
+                document.getElementById(`text${i}`).style.display = 'block';
+                document.getElementById(`img${i}`).value = '';
+            }
+            uploadedImages = ["", "", ""];
+        }
+
+        // 6. Galeriyi Ekrana Çizme
+        function renderGallery() {
+            const gallery = document.getElementById('galleryGrid');
+            gallery.innerHTML = '';
+            let shots = JSON.parse(localStorage.getItem('shibumiShots')) || [];
+
+            shots.forEach(shot => {
+                let starsHTML = '★'.repeat(shot.rating) + '☆'.repeat(5 - shot.rating);
+                
+                let imagesHTML = '<div class="shot-images">';
+                shot.images.forEach(img => {
+                    if(img) imagesHTML += `<img src="${img}" alt="Shot görseli">`;
+                });
+                imagesHTML += '</div>';
+
+                const card = document.createElement('div');
+                card.className = 'shot-card';
+                card.innerHTML = `
+                    <p style="color: var(--accent-color); font-size: 0.8rem; text-align: right;">${shot.date}</p>
+                    <h3>${shot.name}</h3>
+                    ${shot.content ? `<p><strong>İçerik:</strong> ${shot.content}</p>` : ''}
+                    ${shot.glass ? `<p><strong>Fiziksel Duruş:</strong> ${shot.glass}</p>` : ''}
+                    ${shot.ceoNotes ? `<p><strong>Zaze'nin Notları:</strong> ${shot.ceoNotes}</p>` : ''}
+                    <p style="color: var(--accent-color); letter-spacing: 2px;">Frekans: ${starsHTML}</p>
+                    ${shot.belief ? `<p class="script-font">${shot.belief}</p>` : ''}
+                    ${imagesHTML}
+                `;
+                gallery.appendChild(card);
+            });
+        }
+
+        // Sayfa yüklendiğinde galeriyi göster
+        window.onload = renderGallery;
+    </script>
+</body>
+</html>
