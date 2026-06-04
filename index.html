@@ -51,6 +51,7 @@
             color: var(--accent-color);
             text-transform: uppercase;
             margin-bottom: 10px;
+            font-weight: 500;
         }
 
         header h1 {
@@ -74,16 +75,16 @@
             margin-bottom: 60px;
         }
 
-        /* Sol Panel: Vizyon Alanı */
+        /* Sol Panel: Vizyon Alanı (Tek Kolaj) */
         .vision-board {
             display: flex;
             flex-direction: column;
-            gap: 20px;
         }
 
         .image-upload-box {
             border: 1px dashed var(--accent-color);
-            height: 250px;
+            height: 100%; /* Tüm sol paneli kaplasın */
+            min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,6 +119,7 @@
             font-size: 1.2rem;
             text-align: center;
             padding: 10px;
+            letter-spacing: 1px;
         }
 
         /* Sağ Panel: Dinamik Form */
@@ -141,7 +143,7 @@
             padding-left: 10px;
         }
 
-        input[type="text"], textarea {
+        input[type="text"], input[type="url"], textarea {
             width: 100%;
             background: transparent;
             border: none;
@@ -154,7 +156,7 @@
             resize: vertical;
         }
 
-        input[type="text"]:focus, textarea:focus {
+        input[type="text"]:focus, input[type="url"]:focus, textarea:focus {
             outline: none;
             border-bottom-color: var(--accent-color);
         }
@@ -166,8 +168,26 @@
 
         .script-font {
             font-family: 'Great Vibes', cursive !important;
-            font-size: 1.5rem !important;
+            font-size: 1.8rem !important;
             color: var(--accent-color) !important;
+            line-height: 1.2;
+        }
+
+        .add-link-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: left;
+            margin-top: 5px;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        .add-link-btn:hover {
+            opacity: 0.7;
         }
 
         /* Alt Kısım: Gurme CEO Yorumu */
@@ -235,7 +255,7 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 40px;
             margin-top: 40px;
         }
@@ -245,6 +265,8 @@
             border: 1px solid #eee;
             padding: 30px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .shot-card:hover {
@@ -264,21 +286,47 @@
         }
 
         .shot-card .script-font {
-            font-size: 1.3rem !important;
+            font-size: 1.5rem !important;
             margin-top: 15px;
+            margin-bottom: 15px;
             display: block;
+            white-space: pre-wrap;
         }
 
-        .shot-images {
-            display: flex;
-            gap: 5px;
-            margin-top: 15px;
+        .shot-image-container {
+            margin-top: auto;
+            padding-top: 15px;
         }
 
-        .shot-images img {
-            width: 30%;
-            height: 80px;
+        .shot-image-container img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
             object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .shot-links-list {
+            list-style-type: none;
+            margin-top: 10px;
+            padding-left: 0;
+        }
+
+        .shot-links-list li {
+            margin-bottom: 5px;
+        }
+
+        .shot-links-list a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .shot-links-list a:hover {
+            color: var(--text-color);
+            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
@@ -290,34 +338,27 @@
                 display: block;
                 margin-top: 20px;
             }
+            .image-upload-box {
+                min-height: 250px;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <p>Büyülü Mutfak / '0' Frekansı</p>
+        <p>BÜYÜLÜ MUTFAK</p>
         <h1>SHIBUMI AURA SHOT ARŞİVİ</h1>
         <div class="date-display" id="todayDate"></div>
     </header>
 
     <main>
-        <!-- Sol Panel -->
+        <!-- Sol Panel (Tek Kolaj Alanı) -->
         <section class="vision-board">
-            <div class="image-upload-box" onclick="document.getElementById('img1').click()">
-                <span id="text1">+ Görsel Ekle</span>
-                <input type="file" id="img1" accept="image/*" onchange="previewImage(this, 'preview1', 'text1')">
-                <img id="preview1" src="" alt="Görsel 1">
-            </div>
-            <div class="image-upload-box" onclick="document.getElementById('img2').click()">
-                <span id="text2">+ Görsel Ekle</span>
-                <input type="file" id="img2" accept="image/*" onchange="previewImage(this, 'preview2', 'text2')">
-                <img id="preview2" src="" alt="Görsel 2">
-            </div>
-            <div class="image-upload-box" onclick="document.getElementById('img3').click()">
-                <span id="text3">+ Görsel Ekle</span>
-                <input type="file" id="img3" accept="image/*" onchange="previewImage(this, 'preview3', 'text3')">
-                <img id="preview3" src="" alt="Görsel 3">
+            <div class="image-upload-box" onclick="document.getElementById('collageImg').click()">
+                <span id="collageText">İlham Kolajı (Görsel Ekle)</span>
+                <input type="file" id="collageImg" accept="image/*" onchange="previewImage(this, 'collagePreview', 'collageText')">
+                <img id="collagePreview" src="" alt="Kolaj Görseli">
             </div>
         </section>
 
@@ -340,8 +381,17 @@
 
             <div class="form-group">
                 <label>Pipet (İnanç Cümlesi)</label>
-                <input type="text" id="shotBelief" class="script-font" placeholder="Buraya yazılanlar zihne kazınır..." autocomplete="off">
+                <textarea id="shotBelief" class="script-font" oninput="autoResize(this)" placeholder="Buraya yazılanlar zihne kazınır..." autocomplete="off"></textarea>
             </div>
+
+            <!-- Yeni Bağlantılar Alanı -->
+            <div class="form-group" id="linksContainer">
+                <label>İlham Bağlantıları (Pinler, Şarkılar vb.)</label>
+                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+            </div>
+            <button class="add-link-btn" onclick="addLinkField()">+ Yeni Bağlantı Ekle</button>
         </section>
     </main>
 
@@ -367,7 +417,7 @@
 
     <!-- Geçmiş Shotlar Galerisi -->
     <section class="gallery-section">
-        <h2 style="text-align: center; color: var(--accent-color);">Geçmiş Shotlar</h2>
+        <h2 style="text-align: center; color: var(--accent-color); margin-bottom: 20px;">Geçmiş Shotlar</h2>
         <div class="gallery-grid" id="galleryGrid">
             <!-- JavaScript ile kartlar buraya eklenecek -->
         </div>
@@ -384,8 +434,8 @@
             textarea.style.height = textarea.scrollHeight + 'px';
         }
 
-        // 3. Görsel Yükleme ve Önizleme (Base64'e çevirir)
-        let uploadedImages = ["", "", ""];
+        // 3. Tek Görsel Yükleme ve Önizleme
+        let uploadedImage = "";
         function previewImage(input, previewId, textId) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -393,16 +443,24 @@
                     document.getElementById(previewId).src = e.target.result;
                     document.getElementById(previewId).style.display = 'block';
                     document.getElementById(textId).style.display = 'none';
-                    
-                    // Dizide doğru indekse kaydet (id'nin son rakamından indeksi bul)
-                    let index = parseInt(input.id.replace('img', '')) - 1;
-                    uploadedImages[index] = e.target.result;
+                    uploadedImage = e.target.result;
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // 4. Verileri Local Storage'a Kaydetme
+        // 4. Dinamik Link Alanı Ekleme
+        function addLinkField() {
+            const container = document.getElementById('linksContainer');
+            const newInput = document.createElement('input');
+            newInput.type = 'url';
+            newInput.className = 'link-input';
+            newInput.placeholder = 'https://...';
+            newInput.autocomplete = 'off';
+            container.appendChild(newInput);
+        }
+
+        // 5. Verileri Local Storage'a Kaydetme
         function saveShot() {
             const name = document.getElementById('shotName').value;
             const content = document.getElementById('shotContent').value;
@@ -411,7 +469,20 @@
             const ceoNotes = document.getElementById('ceoNotes').value;
             const date = document.getElementById('todayDate').innerText;
             
-            // Seçili yıldızı bul
+            // Tüm linkleri toplayıp boş olmayanları filtreleme
+            const linkInputs = document.querySelectorAll('.link-input');
+            const links = [];
+            linkInputs.forEach(input => {
+                if(input.value.trim() !== "") {
+                    // Kullanıcı http:// yazmayı unutursa otomatik ekleme
+                    let finalUrl = input.value.trim();
+                    if(!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+                        finalUrl = 'https://' + finalUrl;
+                    }
+                    links.push(finalUrl);
+                }
+            });
+            
             let rating = 0;
             const stars = document.getElementsByName('rating');
             for(let star of stars) {
@@ -435,22 +506,23 @@
                 belief: belief,
                 ceoNotes: ceoNotes,
                 rating: rating,
-                images: [...uploadedImages]
+                image: uploadedImage,
+                links: links
             };
 
             let shots = JSON.parse(localStorage.getItem('shibumiShots')) || [];
-            shots.unshift(newShot); // En yeni en başa
+            shots.unshift(newShot);
             
             try {
                 localStorage.setItem('shibumiShots', JSON.stringify(shots));
                 renderGallery();
                 resetForm();
             } catch (e) {
-                alert("Görsel boyutları çok büyük olabilir. Lütfen daha küçük boyutlu görseller (örn: 500kb altı) tercih edin.");
+                alert("Görsel boyutu çok büyük olabilir. Lütfen görselinizi biraz daha sıkıştırarak deneyin.");
             }
         }
 
-        // 5. Formu Temizleme
+        // 6. Formu Temizleme
         function resetForm() {
             document.getElementById('shotName').value = '';
             document.getElementById('shotContent').value = '';
@@ -458,22 +530,31 @@
             document.getElementById('shotGlass').value = '';
             document.getElementById('shotGlass').style.height = 'auto';
             document.getElementById('shotBelief').value = '';
+            document.getElementById('shotBelief').style.height = 'auto';
             document.getElementById('ceoNotes').value = '';
             document.getElementById('ceoNotes').style.height = 'auto';
             
+            // Link alanlarını sıfırlama (Sadece ilk 3 tanesini tut)
+            const linksContainer = document.getElementById('linksContainer');
+            const labelHtml = '<label>İlham Bağlantıları (Pinler, Şarkılar vb.)</label>';
+            const defaultInputs = `
+                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+                <input type="url" class="link-input" placeholder="https://..." autocomplete="off">
+            `;
+            linksContainer.innerHTML = labelHtml + defaultInputs;
+
             const stars = document.getElementsByName('rating');
             for(let star of stars) star.checked = false;
 
-            for(let i=1; i<=3; i++) {
-                document.getElementById(`preview${i}`).style.display = 'none';
-                document.getElementById(`preview${i}`).src = '';
-                document.getElementById(`text${i}`).style.display = 'block';
-                document.getElementById(`img${i}`).value = '';
-            }
-            uploadedImages = ["", "", ""];
+            document.getElementById('collagePreview').style.display = 'none';
+            document.getElementById('collagePreview').src = '';
+            document.getElementById('collageText').style.display = 'block';
+            document.getElementById('collageImg').value = '';
+            uploadedImage = "";
         }
 
-        // 6. Galeriyi Ekrana Çizme
+        // 7. Galeriyi Ekrana Çizme
         function renderGallery() {
             const gallery = document.getElementById('galleryGrid');
             gallery.innerHTML = '';
@@ -482,11 +563,21 @@
             shots.forEach(shot => {
                 let starsHTML = '★'.repeat(shot.rating) + '☆'.repeat(5 - shot.rating);
                 
-                let imagesHTML = '<div class="shot-images">';
-                shot.images.forEach(img => {
-                    if(img) imagesHTML += `<img src="${img}" alt="Shot görseli">`;
-                });
-                imagesHTML += '</div>';
+                // Linkleri HTML'e çevirme
+                let linksHTML = '';
+                if(shot.links && shot.links.length > 0) {
+                    linksHTML = '<ul class="shot-links-list">';
+                    shot.links.forEach((link, index) => {
+                        linksHTML += `<li><a href="${link}" target="_blank">Bağlantı ${index + 1} ↗</a></li>`;
+                    });
+                    linksHTML += '</ul>';
+                }
+
+                // Kolaj görseli HTML'i
+                let imageHTML = '';
+                if(shot.image) {
+                    imageHTML = `<div class="shot-image-container"><img src="${shot.image}" alt="Kolaj Görseli"></div>`;
+                }
 
                 const card = document.createElement('div');
                 card.className = 'shot-card';
@@ -494,17 +585,17 @@
                     <p style="color: var(--accent-color); font-size: 0.8rem; text-align: right;">${shot.date}</p>
                     <h3>${shot.name}</h3>
                     ${shot.content ? `<p><strong>İçerik:</strong> ${shot.content}</p>` : ''}
-                    ${shot.glass ? `<p><strong>Fiziksel Duruş:</strong> ${shot.glass}</p>` : ''}
+                    ${shot.glass ? `<p><strong>Bardak (Fiziksel Duruş):</strong> ${shot.glass}</p>` : ''}
                     ${shot.ceoNotes ? `<p><strong>Zaze'nin Notları:</strong> ${shot.ceoNotes}</p>` : ''}
-                    <p style="color: var(--accent-color); letter-spacing: 2px;">Frekans: ${starsHTML}</p>
+                    <p style="color: var(--accent-color); letter-spacing: 2px; margin-bottom: 5px;">Frekans: ${starsHTML}</p>
+                    ${linksHTML}
                     ${shot.belief ? `<p class="script-font">${shot.belief}</p>` : ''}
-                    ${imagesHTML}
+                    ${imageHTML}
                 `;
                 gallery.appendChild(card);
             });
         }
 
-        // Sayfa yüklendiğinde galeriyi göster
         window.onload = renderGallery;
     </script>
 </body>
